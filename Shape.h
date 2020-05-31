@@ -6,17 +6,24 @@
 class Shape
 {
 protected:
-	std::string name;
+    std::string name;
 public:
     //Shape(){};
-    Shape(const std::string& name) : name(name){};
-    virtual std::string getShape() { return 0;  }
-    virtual void writeToFile(std::ostream &os) =0;
-    virtual std::string combine() {return 0;}
-    virtual void translate(const int, const int)=0;
-	/*virtual Point CoordinatesOfBottomLeftPoint()const { return 0;  }
+    Shape(const std::string& name) : name(name) {};
+    virtual std::string getShape() const
+    {
+        return 0;
+    }
+    virtual std::string combine() const
+    {
+        return 0;
+    }
+    virtual void translate(const int, const int) = 0;
+    virtual void writeToFile(std::ostream& ) = 0;
+    virtual Shape* clone() const = 0;
+    virtual Point CoordinatesOfBottomLeftPoint()const { return 0;  }
     virtual Point CoordinatesOfBottomRightPoint()const { return 0;  }
     virtual Point CoordinatesOfTopLeftPoint()const { return 0;  }
-	virtual Point CoordinatesOfTopRightPoint()const { return 0;  }*/
+    virtual Point CoordinatesOfTopRightPoint()const { return 0;  }
 };
 #endif

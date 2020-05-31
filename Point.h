@@ -12,7 +12,14 @@ public:
 		this->x = x;
 		this->y = y;
 	}
-
+    bool operator<=(const Point& other){
+        if(x<=other.x && y<=other.y) return 1;
+        return 0;
+    }
+    bool operator>=(const Point& other){
+        if(x>=other.x && y>=other.y) return 1;
+        return 0;
+    }
 	double distanceToTheOther(const Point& other)
 	{
 		int newX = this->x - other.x;

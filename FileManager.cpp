@@ -1,18 +1,16 @@
 #include "FileManager.h"
-#include<exception>
 #include <cstdlib>
-#include<typeinfo>
 
 void FileManager::removeSpace(const std::string &str, std::string *word)
 {
-    int counterr =0;
-    for (int x = 0; x<str.length(); x++)
+    int counterr = 0;
+    for (int x = 0; x < str.length(); x++)
     {
-        if (str[x] == ' ')
+        if (str[x] == ' ' && str[x-1] != '=' && str[x+1] != '=')
         {
             counterr++;
         }
-        if(str[x] != ' ')
+        else if(str[x] != ' ' && str[x] != '"')
         {
             word[counterr] += str[x];
         }
@@ -62,62 +60,64 @@ void FileManager::start()
         {
             std::cout << "Exit\n";
             RealFileName = "";
-            Allshapes.shapes.clear();
+            Allshapes.clearShapes();
             Shapes::counter = 0;
             return;
         }
         else if (operation == "close")
         {
-            if (this->RealFileName == "")
+            if (RealFileName == "")
             {
                 std::cout << "There is no opened file!\n";
-                //continue;
             }
             std::cout << "Closed current file\n";
             RealFileName = "";
-            Allshapes.shapes.clear();
+            Allshapes.clearShapes();
+            //Allshapes.shapes.clear();
             Shapes::counter = 0;
         }
-        //else if (operation == "within")
-        // {
-//            within(parts);
-        //}
+        /*else if (operation == "within")
+        {
+            within(parts);
+        }*/
         else if (operation == "help")
         {
             printHelp();
         }
+        else
+        {
+            std::cout << "There is no such a command!\n";
+            printHelp();
+        }
     }
 }
-void FileManager::loadShapes(std::istream&fin)
+
+void FileManager::loadShapes(std::istream& fin)
 {
     std::string myText;
     while (getline(fin, myText))
     {
-        std::string attr[6]= {};
+        std::string attr[6] = {};
         int cntr = 0;
         removeSpace(myText, attr);
-        //Shape* temp;
         if (attr[0] == "line")
         {
-            // temp = new Line(atoi(attr[1].c_str()), atoi(attr[2].c_str()), atoi(attr[3].c_str()), atoi(attr[4].c_str()));
-            Allshapes.shapes.push_back(new Line(atoi(attr[1].c_str()), atoi(attr[2].c_str()), atoi(attr[3].c_str()), atoi(attr[4].c_str())));
+            Allshapes.addShape(new Line(atoi(attr[1].c_str()), atoi(attr[2].c_str()), atoi(attr[3].c_str()), atoi(attr[4].c_str())));
         }
         else if (attr[0] == "rectangle")
         {
-            //temp = new Rectangle(atoi(attr[1].c_str()), atoi(attr[2].c_str()), atoi(attr[3].c_str()), atoi(attr[4].c_str()), attr[5]);
-            Allshapes.shapes.push_back(new Rectangle(atoi(attr[1].c_str()), atoi(attr[2].c_str()), atoi(attr[3].c_str()), atoi(attr[4].c_str()), attr[5]));
+            Allshapes.addShape(new Rectangle(atoi(attr[1].c_str()), atoi(attr[2].c_str()), atoi(attr[3].c_str()), atoi(attr[4].c_str()), attr[5]));
+
         }
         else if (attr[0] == "circle")
         {
-            //temp = new Rectangle(atoi(attr[1].c_str()), atoi(attr[2].c_str()), atoi(attr[3].c_str()), atoi(attr[4].c_str()), attr[5]);
-            Allshapes.shapes.push_back(new Rectangle(atoi(attr[1].c_str()), atoi(attr[2].c_str()), atoi(attr[3].c_str()), atoi(attr[4].c_str()), attr[5]));
+            Allshapes.addShape(new Circle(atoi(attr[1].c_str()), atoi(attr[2].c_str()), atoi(attr[3].c_str()), attr[4]));
         }
-        //Allshapes.shapes.push_back(temp);
         Shapes::counter++;
-        //delete temp;
 
     }
 }
+
 void FileManager::open(const std::string& fileName)
 {
     Shapes::counter = 0;
@@ -139,115 +139,65 @@ void FileManager::open(const std::string& fileName)
         fin.close();
         print();
     }
-
 }
+
 void FileManager::create(std::string *parts)
 {
-    //Shape* temp;
     if (parts[1] == "line")
     {
-        //temp = new Line(atoi(parts[2].c_str()), atoi(parts[3].c_str()), atoi(parts[4].c_str()), atoi(parts[5].c_str()));
-        Allshapes.shapes.push_back(new Line(atoi(parts[2].c_str()), atoi(parts[3].c_str()), atoi(parts[4].c_str()), atoi(parts[5].c_str())));
+        Allshapes.addShape(new Line(atoi(parts[2].c_str()), atoi(parts[3].c_str()), atoi(parts[4].c_str()), atoi(parts[5].c_str())));
     }
-
     else if (parts[1] == "rectangle")
     {
-        //temp = new Rectangle(atoi(parts[2].c_str()), atoi(parts[3].c_str()), atoi(parts[4].c_str()), atoi(parts[5].c_str()), parts[6]);
-        Allshapes.shapes.push_back(new Rectangle(atoi(parts[2].c_str()), atoi(parts[3].c_str()), atoi(parts[4].c_str()), atoi(parts[5].c_str()), parts[6]));
+        Allshapes.addShape(new Rectangle(atoi(parts[2].c_str()), atoi(parts[3].c_str()), atoi(parts[4].c_str()), atoi(parts[5].c_str()), parts[6]));
     }
     else if (parts[1] == "circle")
     {
-        //temp = new Rectangle(atoi(parts[2].c_str()), atoi(parts[3].c_str()), atoi(parts[4].c_str()), atoi(parts[5].c_str()), parts[6]);
-        Allshapes.shapes.push_back(new Circle(atoi(parts[2].c_str()), atoi(parts[3].c_str()), atoi(parts[4].c_str()), parts[5]));
+        Allshapes.addShape(new Circle(atoi(parts[2].c_str()), atoi(parts[3].c_str()), atoi(parts[4].c_str()), parts[5]));
     }
     else
     {
-        return;
+        std::cout << "Check if you have made a mistake in the input of the shape, the shapes that are available for now are line/rectangle/circle\n";
     }
     Shapes::counter++;
-    //Allshapes.shapes.push_back(temp);
-    //delete temp;
-    //Allshapes.shapes.push_back(temp);
     print();
-    //  std::cout << "Successfully created " << temp->getShape() << " (" << Shapes::counter << ")" << "\n";
+    std::cout << "Successfully created " << parts[1] << " (" << Shapes::counter << ")" << "\n";
 
 }
-void FileManager::print()
+void FileManager::print() const
 {
-    for (int i = 0; i <this->Allshapes.shapes.size(); i++)
-    {
-        std::string ans =Allshapes.shapes[i]->combine();
-        std::cout << i + 1 << ". " << ans;
-    }
+    Allshapes.printShapes();
 }
-bool FileManager::check_position(const int position, const int max_position) const
+
+void FileManager::eraseIt(const int& position)
 {
-    if(max_position == 0)
-    {
-        std::cerr<<"The File is empty!"<<std::endl;
-        return false;
-    }
-    if(position < 0 || position >= max_position)
-    {
-        std::cerr<<"Not found! Figures positions are between 0 and "<<max_position-1<<std::endl;
-        return false;
-    }
-    return true;
+    Allshapes.eraseShape(position);
 }
-void FileManager::eraseIt(const int position)
+
+void FileManager::save() const
 {
-    if(!check_position(position-1, Allshapes.shapes.size()))
-        return;
-    Shape* figure = Allshapes.shapes[position - 1];
-    Allshapes.shapes.erase(Allshapes.shapes.begin() + position - 1);
-    Shapes::counter--;
-    std::cout << "Erased a " << figure->getShape() << " (" << position << ")\n";
-    delete figure;
-}
-void FileManager::save()
-{
-    if (RealFileName == "")
+    if(RealFileName == "")
     {
         std::cout << "There is no opened file!\n";
         return;
     }
     saveAs(RealFileName.c_str());
 }
-void FileManager::tri()
-{
-    Shapes shape;
-    Shape* temp= new Line(1, 2, 3,4);
-    Shape* temp2= new Line(1, 2, 3,5);
-    Allshapes.shapes.push_back(temp);
-    Allshapes.shapes.push_back(temp2);
-    for (int i = 0; i < this->Allshapes.shapes.size(); i++)
-    {
-        std::string ans = Allshapes.shapes[i]->combine();
-        std::cout << i + 1 << ". " << ans;
-    }
-    delete temp;
-    delete temp2;
-}
 
-void FileManager::saveAs(const std::string &fileName)
+void FileManager::saveAs(const std::string &fileName) const
 {
     std::ofstream ofs(fileName, std::ios::out| std::ios::trunc);
     if(!ofs)
         std::cout<<"Failed to save to file"<<std::endl;
-
-    for (int i = 0; i < this->Allshapes.shapes.size(); i++)
-    {
-        this->Allshapes.shapes[i]->writeToFile(ofs);
-    }
-
+    Allshapes.saveShapes(ofs);
     ofs.close();
-    std::cout << "Successfully saved the changes to " << fileName << " \n";
+    std::cout << "Successfully saved " << fileName << " \n";
 }
 int getNum(const std::string &str)
 {
     std::string word;
     bool check = false;
-    for (int x = 0; x<str.length(); x++)
+    for (int x = 0; x < str.length(); x++)
     {
         if (str[x] == '=')
         {
@@ -255,86 +205,86 @@ int getNum(const std::string &str)
         }
         if(str[x] != ' ' && str[x]!= '=' )
         {
-
             if(check)
                 word += str[x];
         }
     }
-
     int num = 0;
-
     num = atoi(word.c_str());
     return num;
-
 }
-void FileManager::translate(std::string* parts)
+
+void FileManager::translate(std::string* parts) const
 {
 
     int vertical = getNum(parts[2]);
+    int horizontal = getNum(parts[1]);
+    if (parts[3]=="")
 
-    int horizontal= getNum(parts[1]);
-
-    if (sizeof(parts) == 3)
+        Allshapes.translateShapes(vertical, horizontal);
+    else
     {
-        for (int i = 0; i < this->Allshapes.shapes.size(); i++)
+        int position = atoi(parts[3].c_str());
+        Allshapes.translateShape(position, vertical, horizontal);
+    }
+
+}
+/*bool ItIsInsideRectangle(Rectangle *rect, const Shape* shape)
+{
+
+    if(shape->getShape() == "rectangle")
+    {
+        bool f1 = rect->CoordinatesOfBottomLeftPoint() <= shape->CoordinatesOfBottomLeftPoint();
+        bool f2 = rect->CoordinatesOfTopRightPoint() >= shape->CoordinatesOfBottomRightPoint();
+        if(f1 && f2 )
+            return true;
+        return false;
+    }
+    else if(shape->getShape() == "circle")
+    {
+        bool f1 = rect->CoordinatesOfTopRightPoint() >= shape->CoordinatesOfTopRightPoint();
+        bool f2 = rect->CoordinatesOfBottomLeftPoint() <=shape->CoordinatesOfBottomLeftPoint();
+        if(f1 && f2 )
+            return true;
+        return false;
+    } /*selse if(shape->getShape() == "line")
+     {
+        bool f1 = rect->CoordinatesOfTopLeftPoint() >= Point(shape->getX1(),shape->getY1()) && rect.CoordinatesOfBottomLeftPoint() <= Point(shape->getX1(),shape->getY1());
+        bool f2 = rect->CoordinatesOfBottomRightPoint() >=Point(shape->getX2(),shape->getY2()) && rect.CoordinatesOfTopRightPoint() >=Point(shape->getX2(),shape->getY2());
+        if(f1 && f2)
+            return true;
+        return false;
+    }/*/
+/*}
+void FileManager::within(std::string* parts)
+{
+    Shapes withIn;
+    int counter = 0;
+    if (parts[1]== "rectangle")
+    {
+        Rectangle* rect = new Rectangle(atoi(parts[2].c_str()), atoi(parts[3].c_str()), atoi(parts[4].c_str()), atoi(parts[5].c_str()));
+        for (int i = 0; i < Allshapes.shapes.size(); i++)
         {
-            this->Allshapes.shapes[i]->translate(vertical, horizontal);
+
+            if (ItIsInsideRectangle(rect, Allshapes.shapes[i]))
+            {
+                withIn.addShape(rect);
+                counter++;
+            }
         }
-        std::cout << "Translated all figures\n";
-        return;
+        delete rect;
+    }
+
+    if (counter == 0)
+    {
+        std::cout << "No shapes are located within ";
+        std::cout << "\n";
     }
     else
     {
-        int index = atoi(parts[3].c_str());
-        this->Allshapes.shapes[index-1]->translate(vertical, horizontal);
-        std::cout << "Translated " << index << "\n";
+        withIn.printShapes();
     }
-}
-/*bool ItIsInsideRectangle(const Rectangle& rect, const Shape* shape)
-{
-	bool f1 =rect.CoordinatesOfBottomLeftPoint() <= shape->CoordinatesOfBottomLeftPoint();
-    bool f2 = rect.CoordinatesOfBottomRightPoint() <= shape->CoordinatesOfBottomRightPoint();
-    bool f3 = rect.CoordinatesOfTopLeftPoint() >= shape->CoodinatesOfTopLeftPoint();
-    bool f4 rect.CoordinatesOfTopRightPoint() >= shape->CoordinatesOfTopRightPoint();
-    if(f1 && f2 && f3 && f4) return true;
-    return false;
-}
-void FileManager::within(std::string* parts)
-{
-	int* right;
-	int counter = 0;
-	if (parts[1]== "rectangle")
-	{
-		Rectangle* rect = new Rectangle(atoi(parts[2].c_str()), atoi(parts[3].c_str()), atoi(parts[4].c_str()), atoi(parts[5].c_str()));
-		for (int i = 0; i < Allshapes.shapes.size(); i++)
-		{
-
-            if (ItIsInsideRectangle(rect, Allshapes.shapes[i]))
-			{
-				right[counter] = i;
-				counter++
-			}
-		}
-		delete rect;
-	}
-
-	if (counter == 0)
-	{
-		std::cout << "No shapes are located within ";
-		for (int i = 1; i < parts.size(); i++)
-		{
-			std::cout << parts[i] << " ";
-		}
-		std::cout << "\n";
-		return;
-	}
-	for (int i = 0; i < counter; i++)
-	{
-		std::cout << i + 1 << ". " << Allshapes.shapes[right[i]]->combine();
-	}
-	delete right;
 }*/
-
 void FileManager::printHelp() const
 {
     std::cout << "Commands available:The following commands are supported:\n";
