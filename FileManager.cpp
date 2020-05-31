@@ -29,7 +29,9 @@ void FileManager::start()
         std::string operation = parts[0];
         if (operation == "open")
         {
-            open(parts[1]);
+            if(checkFileInput(parts[1]))
+                open(parts[1]);
+            std::cout<<"You are entering wrong file extension, it must be (.svg)\n";
         }
         else if (operation == "create")
         {
@@ -54,7 +56,9 @@ void FileManager::start()
         }
         else if (operation == "saveas")
         {
-            saveAs(parts[1]);
+            if(checkFileInput(parts[1]))
+                saveAs(parts[1]);
+            std::cout<<"You are entering wrong file extension, it must be (.svg)\n";
         }
         else if (operation == "exit")
         {
@@ -117,7 +121,27 @@ void FileManager::loadShapes(std::istream& fin)
 
     }
 }
+bool FileManager::checkFileInput(const std::string& fileName) const
+{
+    bool check = false;
 
+    std::string word;
+    for (int x = 0; x < fileName.length(); x++)
+    {
+        if (fileName[x] == '.')
+        {
+            check =true;
+        }
+        if(check)
+        {
+            word += fileName[x];
+        }
+    }
+    //std::cout<<word;
+    if(word == ".svg")
+        return 1;
+    return 0;
+}
 void FileManager::open(const std::string& fileName)
 {
     Shapes::counter = 0;
@@ -164,6 +188,7 @@ void FileManager::create(std::string *parts)
     std::cout << "Successfully created " << parts[1] << " (" << Shapes::counter << ")" << "\n";
 
 }
+
 void FileManager::print() const
 {
     Allshapes.printShapes();

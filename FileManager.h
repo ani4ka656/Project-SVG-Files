@@ -10,7 +10,6 @@ private:
     std::string RealFileName;
     Shapes Allshapes;
     void loadShapes(std::istream&);
-    //bool check_position(const int, const int) const;
     void create(std::string*);
     void open(const std::string&);
     void eraseIt(const int&);
@@ -21,6 +20,7 @@ private:
     //void within(std::string*);
     void printHelp()const;
     void removeSpace(const std::string&, std::string*);
+    bool checkFileInput(const std::string&) const;
 public:
     void start();
     void tri();
