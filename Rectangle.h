@@ -15,12 +15,12 @@ public:
     void print() const;
     virtual std::string combine() const override;
     virtual void translate(const int,const int) override;
-    Point CoordinatesOfBottomLeftPoint()const override;
-    Point CoordinatesOfBottomRightPoint()const override;
-    Point CoordinatesOfTopLeftPoint()const override;
-    Point CoordinatesOfTopRightPoint()const override;
     virtual void writeToFile(std::ostream&) override;
     virtual Shape* clone() const override;
+    virtual Point CoordinatesOfBottomLeftPoint() const override;
+    virtual Point CoordinatesOfBottomRightPoint() const override;
+    virtual Point CoordinatesOfTopLeftPoint() const override;
+    virtual Point CoordinatesOfTopRightPoint() const override;
 
 };
 #endif

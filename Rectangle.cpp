@@ -51,22 +51,23 @@ Shape* Rectangle::clone() const
 {
     return new Rectangle(*this);
 }
-Point Rectangle::CoordinatesOfTopLeftPoint()const
+
+Point Rectangle::CoordinatesOfTopLeftPoint() const
 {
-	return Point(x,y+width);
+    return Point(x,y+width);
 }
 
-Point Rectangle::CoordinatesOfBottomLeftPoint()const
+Point Rectangle::CoordinatesOfBottomLeftPoint() const
 {
-	return Point(x,y);
+    return Point(x,y);
 }
 
-Point Rectangle::CoordinatesOfTopRightPoint()const
+Point Rectangle::CoordinatesOfTopRightPoint() const
 {
-	return Point(x+width,y+height);
+    return Point(x+width,y+height);
 }
 
 Point Rectangle::CoordinatesOfBottomRightPoint() const
 {
-	return Point(x+width,y);
+    return Point(x+width,y);
 }

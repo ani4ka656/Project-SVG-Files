@@ -49,13 +49,14 @@ Shape* Circle::clone() const
 {
     return new Circle(*this);
 }
-Point Circle::CoordinatesOfTopRightPoint()const
+
+Point Circle::CoordinatesOfTopRightPoint() const
 {
-	return Point(cx+r,cy+r);
+    return Point(cx+r,cy+r);
 }
 
-Point Circle::CoordinatesOfBottomLeftPoint()const
+Point Circle::CoordinatesOfBottomLeftPoint() const
 {
-	return Point(cx-r,cy-r);
+    return Point(cx-r,cy-r);
 }
 
