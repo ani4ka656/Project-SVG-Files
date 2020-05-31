@@ -17,7 +17,9 @@ public:
     virtual void writeToFile(std::ostream&) override;
     virtual Shape* clone() const override;
     virtual Point CoordinatesOfBottomLeftPoint() const override;
+    virtual Point CoordinatesOfBottomRightPoint() const override;
     virtual Point CoordinatesOfTopRightPoint() const override;
+    virtual Point CoordinatesOfTopLeftPoint() const override;
 };
 #endif
 

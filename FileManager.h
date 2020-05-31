@@ -17,13 +17,12 @@ private:
     void save() const;
     void print() const;
     void translate(std::string*) const;
-    //void within(std::string*);
-    void printHelp()const;
+    void within(std::string*);
+    void help()const;
     void removeSpace(const std::string&, std::string*);
     bool checkFileInput(const std::string&) const;
 public:
     void start();
-    void tri();
 };
 
 #endif

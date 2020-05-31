@@ -27,16 +27,20 @@ void FileManager::start()
         std::string parts[7] = {};
         removeSpace(userInput, parts);
         std::string operation = parts[0];
-        if (operation == "open")
+        if (operation != "open" && operation != "exit" && RealFileName == "" && operation != "help")
+        {
+            std::cout << "You should first open a file!" << std::endl;
+        }
+        else if (operation == "open")
         {
             if(checkFileInput(parts[1]))
                 open(parts[1]);
-            std::cout<<"You are entering wrong file extension, it must be (.svg)\n";
+            else
+                std::cout << "You are entering wrong file extension, it must be (.svg)" << std::endl;
         }
         else if (operation == "create")
         {
             create(parts);
-
         }
         else if (operation == "erase")
         {
@@ -58,11 +62,12 @@ void FileManager::start()
         {
             if(checkFileInput(parts[1]))
                 saveAs(parts[1]);
-            std::cout<<"You are entering wrong file extension, it must be (.svg)\n";
+            else
+                std::cout << "You are entering wrong file extension, it must be (.svg)" << std::endl;
         }
         else if (operation == "exit")
         {
-            std::cout << "Exit\n";
+            std::cout << "Exit" << std::endl;
             RealFileName = "";
             Allshapes.clearShapes();
             Shapes::counter = 0;
@@ -70,29 +75,25 @@ void FileManager::start()
         }
         else if (operation == "close")
         {
-            if (RealFileName == "")
-            {
-                std::cout << "There is no opened file!\n";
-            }
-            std::cout << "Closed current file\n";
+            std::cout << "Closed current file" << std::endl;
             RealFileName = "";
             Allshapes.clearShapes();
-            //Allshapes.shapes.clear();
             Shapes::counter = 0;
         }
-        /*else if (operation == "within")
+        else if (operation == "within")
         {
             within(parts);
-        }*/
+        }
         else if (operation == "help")
         {
-            printHelp();
+            help();
         }
         else
         {
-            std::cout << "There is no such a command!\n";
-            printHelp();
+            std::cout << "There is no such a command!" << std::endl;
+            help();
         }
+        std::cout << std::endl;
     }
 }
 
@@ -118,13 +119,12 @@ void FileManager::loadShapes(std::istream& fin)
             Allshapes.addShape(new Circle(atoi(attr[1].c_str()), atoi(attr[2].c_str()), atoi(attr[3].c_str()), attr[4]));
         }
         Shapes::counter++;
-
     }
 }
+
 bool FileManager::checkFileInput(const std::string& fileName) const
 {
     bool check = false;
-
     std::string word;
     for (int x = 0; x < fileName.length(); x++)
     {
@@ -142,6 +142,7 @@ bool FileManager::checkFileInput(const std::string& fileName) const
         return 1;
     return 0;
 }
+
 void FileManager::open(const std::string& fileName)
 {
     Shapes::counter = 0;
@@ -150,16 +151,16 @@ void FileManager::open(const std::string& fileName)
     if(!fin)
     {
         fin.close();
-        std::cout<<"File is empty"<<std::endl;
+        std::cout << "File is empty" << std::endl;
         std::ofstream os(RealFileName.c_str());
-        std::cout<<"Please add some figures using create"<<std::endl;
+        std::cout << "Please add some figures using create" << std::endl;
         os.close();
         return;
     }
     else
     {
         loadShapes(fin);
-        std::cout << "Successfully opened " << RealFileName << "\n";
+        std::cout << "Successfully opened " << RealFileName << std::endl;
         fin.close();
         print();
     }
@@ -181,11 +182,11 @@ void FileManager::create(std::string *parts)
     }
     else
     {
-        std::cout << "Check if you have made a mistake in the input of the shape, the shapes that are available for now are line/rectangle/circle\n";
+        std::cout << "Check if you have made a mistake in the input of the shape, the shapes that are available for now are line/rectangle/circle!" << std::endl;
     }
     Shapes::counter++;
     print();
-    std::cout << "Successfully created " << parts[1] << " (" << Shapes::counter << ")" << "\n";
+    std::cout << "Successfully created " << parts[1] << " (" << Shapes::counter << ")" << std::endl;
 
 }
 
@@ -203,7 +204,7 @@ void FileManager::save() const
 {
     if(RealFileName == "")
     {
-        std::cout << "There is no opened file!\n";
+        std::cout << "There is no opened file!" << std::endl;
         return;
     }
     saveAs(RealFileName.c_str());
@@ -213,11 +214,12 @@ void FileManager::saveAs(const std::string &fileName) const
 {
     std::ofstream ofs(fileName, std::ios::out| std::ios::trunc);
     if(!ofs)
-        std::cout<<"Failed to save to file"<<std::endl;
+        std::cout << "Failed to save to file" << std::endl;
     Allshapes.saveShapes(ofs);
     ofs.close();
-    std::cout << "Successfully saved " << fileName << " \n";
+    std::cout << "Successfully saved " << fileName << std::endl;
 }
+
 int getNum(const std::string &str)
 {
     std::string word;
@@ -241,7 +243,6 @@ int getNum(const std::string &str)
 
 void FileManager::translate(std::string* parts) const
 {
-
     int vertical = getNum(parts[2]);
     int horizontal = getNum(parts[1]);
     if (parts[3]=="")
@@ -252,78 +253,40 @@ void FileManager::translate(std::string* parts) const
         int position = atoi(parts[3].c_str());
         Allshapes.translateShape(position, vertical, horizontal);
     }
-
 }
-/*bool ItIsInsideRectangle(Rectangle *rect, const Shape* shape)
-{
 
-    if(shape->getShape() == "rectangle")
-    {
-        bool f1 = rect->CoordinatesOfBottomLeftPoint() <= shape->CoordinatesOfBottomLeftPoint();
-        bool f2 = rect->CoordinatesOfTopRightPoint() >= shape->CoordinatesOfBottomRightPoint();
-        if(f1 && f2 )
-            return true;
-        return false;
-    }
-    else if(shape->getShape() == "circle")
-    {
-        bool f1 = rect->CoordinatesOfTopRightPoint() >= shape->CoordinatesOfTopRightPoint();
-        bool f2 = rect->CoordinatesOfBottomLeftPoint() <=shape->CoordinatesOfBottomLeftPoint();
-        if(f1 && f2 )
-            return true;
-        return false;
-    } /*selse if(shape->getShape() == "line")
-     {
-        bool f1 = rect->CoordinatesOfTopLeftPoint() >= Point(shape->getX1(),shape->getY1()) && rect.CoordinatesOfBottomLeftPoint() <= Point(shape->getX1(),shape->getY1());
-        bool f2 = rect->CoordinatesOfBottomRightPoint() >=Point(shape->getX2(),shape->getY2()) && rect.CoordinatesOfTopRightPoint() >=Point(shape->getX2(),shape->getY2());
-        if(f1 && f2)
-            return true;
-        return false;
-    }/*/
-/*}
 void FileManager::within(std::string* parts)
 {
     Shapes withIn;
     int counter = 0;
-    if (parts[1]== "rectangle")
+    if (parts[1] == "rectangle")
     {
-        Rectangle* rect = new Rectangle(atoi(parts[2].c_str()), atoi(parts[3].c_str()), atoi(parts[4].c_str()), atoi(parts[5].c_str()));
-        for (int i = 0; i < Allshapes.shapes.size(); i++)
-        {
+        Allshapes.withinShapes(new Rectangle(atoi(parts[2].c_str()), atoi(parts[3].c_str()), atoi(parts[4].c_str()), atoi(parts[5].c_str())), withIn, counter, parts[1]);
 
-            if (ItIsInsideRectangle(rect, Allshapes.shapes[i]))
-            {
-                withIn.addShape(rect);
-                counter++;
-            }
-        }
-        delete rect;
     }
+    /*if (parts[1] == "circle")
+    {
+        Allshapes.withinShapes(new Circle(atoi(parts[2].c_str()), atoi(parts[3].c_str()), atoi(parts[4].c_str())), withIn, counter, parts[1]);
 
-    if (counter == 0)
-    {
-        std::cout << "No shapes are located within ";
-        std::cout << "\n";
-    }
-    else
-    {
-        withIn.printShapes();
-    }
-}*/
-void FileManager::printHelp() const
+    }*/
+
+    withIn.clearShapes();
+}
+
+void FileManager::help() const
 {
-    std::cout << "Commands available:The following commands are supported:\n";
-    std::cout << "open <file> - opens <file>\n";
-    std::cout << "close - closes the currently open file\n";
-    std::cout << "save - saves the currently open file\n";
-    std::cout << "saveas <file> - saves the currently open file in <file>\n";
-    std::cout << "help - prints this information\n";
-    std::cout << "exit - exists the program\n";
-    std::cout << "print - prints all the information for all figures\n";
-    std::cout << "create <rectangle/circle/line> - creates a new figure \n";
-    std::cout << "erase <n> - erases figure with number <n>\n";
-    std::cout << "translate {<index>} - translates the figure with number <n> or all of them if <n> is not initialized\n";
-    std::cout << "within <rectangle/circle> - prints all the figures that are in a region\n";
+    std::cout << "The following commands are supported:" << std::endl;
+    std::cout << "open <file> - opens <file>" << std::endl;
+    std::cout << "close - closes the currently open file" << std::endl;
+    std::cout << "save - saves the currently open file" << std::endl;
+    std::cout << "saveas <file> - saves the currently open file in <file>" << std::endl;
+    std::cout << "help - prints this information" << std::endl;
+    std::cout << "exit - exists the program" << std::endl;
+    std::cout << "print - prints all the information for all figures" << std::endl;
+    std::cout << "create <rectangle/circle/line> - creates a new figure" << std::endl;
+    std::cout << "erase <n> - erases figure with number <n>" << std::endl;
+    std::cout << "translate {<index>} - translates the figure with number <n> or all of them if <n> is not initialized" << std::endl;
+    std::cout << "within <rectangle/circle> - prints all the figures that are in a region" << std::endl;
 }
 
 

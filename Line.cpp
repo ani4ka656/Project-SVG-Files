@@ -55,3 +55,13 @@ Shape* Line::clone() const
 {
     return new Line(*this);
 }
+
+Point Line::CoordinatesOfTopLeftPoint() const
+{
+    return Point(x1, y1);
+}
+
+Point Line::CoordinatesOfTopRightPoint() const
+{
+    return Point(x2, y2);
+}

@@ -17,6 +17,8 @@ public:
     virtual void translate(const int,const int) override;
     virtual void writeToFile(std::ostream&) override;
     virtual Shape* clone() const override;
+    virtual Point CoordinatesOfTopLeftPoint() const override;
+    virtual Point CoordinatesOfTopRightPoint() const override;
 
 };
 #endif

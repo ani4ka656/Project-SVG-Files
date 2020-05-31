@@ -52,11 +52,20 @@ Shape* Circle::clone() const
 
 Point Circle::CoordinatesOfTopRightPoint() const
 {
-    return Point(cx+r,cy+r);
+    return Point(cx+r, cy+r);
+}
+
+Point Circle::CoordinatesOfTopLeftPoint() const
+{
+    return Point(r, 0);
 }
 
 Point Circle::CoordinatesOfBottomLeftPoint() const
 {
-    return Point(cx-r,cy-r);
+    return Point(cx-r, cy-r);
 }
 
+Point Circle::CoordinatesOfBottomRightPoint() const
+{
+    return Point(cx, cy);
+}
